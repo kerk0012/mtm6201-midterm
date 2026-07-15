@@ -1,0 +1,739 @@
+/* ==========================================================================
+   main.css — MTM6201 Midterm — My Coffee House
+   Mobile-first. All breakpoints use min-width only.
+   Breakpoints match the Figma frames: 390 (base) / 768 (tablet) / 1440 (desktop)
+
+   CONTENTS
+   01. Custom properties (tokens)
+   02. Base + typography
+   03. Utilities (wrapper, skip link, eyebrow, buttons)
+   04. Animation
+   05. Site header + navigation
+   06. Hero
+   07. Gallery
+   08. Features (Why Visit Us?)
+   09. Call to action (Menu / Locations)
+   10. Story (Read Our Story)
+   11. Testimonials
+   12. Site footer
+
+   COMPLEX SELECTORS USED (beyond a basic class/tag selector)
+   a) .story__text p + p                          — adjacent sibling  (§10)
+   b) .hero__content > *:nth-child(2 | 3)         — child + :nth-child (§04)
+   c) .features__list > .features__item:last-child — child + :last-child (§08)
+   d) .testimonials__list > li:last-child          — child + :last-child (§11)
+   e) .testimonial__body .testimonial__cite        — descendant        (§11)
+   ========================================================================== */
+
+/* ==========================================================================
+   01. CUSTOM PROPERTIES
+   The token values are redefined at each breakpoint, so every component
+   scales from one place instead of being overridden individually.
+   ========================================================================== */
+
+:root {
+  /* Colour */
+  --color-cream: #f3f0e9;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-gold: #d69e3d;
+  --color-gold-dark: #966f2c;
+
+  /* Typeface */
+  --font-heading: "Lato", "Trebuchet MS", sans-serif;
+  --font-body: "Karla", "Helvetica Neue", Arial, sans-serif;
+
+  /* Type scale — mobile */
+  --size-h1: 2rem;
+  /* 32px */
+  --size-h2: 1.75rem;
+  /* 28px */
+  --size-h3: 1.375rem;
+  /* 22px */
+  --size-body: 1rem;
+  /* 16px */
+
+  /* Layout */
+  --wrapper-max: 1200px;
+  --wrapper-pad: 1rem;
+  /* 16px */
+  --section-space: 4rem;
+  /* 64px */
+  --gap: 1rem;
+  /* 16px */
+  --hero-height: 500px;
+  --title-space: 1.5rem;
+
+  /* Motion */
+  --transition: 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --size-h1: 3rem;
+    /* 48px */
+    --size-h2: 2.375rem;
+    /* 38px */
+    --size-h3: 1.75rem;
+    /* 28px */
+    --wrapper-pad: 1.5rem;
+    /* 24px */
+    --section-space: 5rem;
+    /* 80px */
+    --gap: 1.5rem;
+    /* 24px */
+    --hero-height: 605px;
+    --title-space: 2rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --size-h1: 3.875rem;
+    /* 62px */
+    --size-h2: 3rem;
+    /* 48px */
+    --size-h3: 2rem;
+    /* 32px */
+    --wrapper-pad: 0;
+    --section-space: 8rem;
+    /* 128px */
+    --hero-height: 800px;
+    --title-space: 2.5rem;
+  }
+}
+
+/* ==========================================================================
+   02. BASE + TYPOGRAPHY
+   ========================================================================== */
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-black);
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Shared heading treatment: Lato Black, uppercase, tight leading */
+.hero__title,
+.section__title,
+.cta__title,
+.features__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  font-size: var(--size-h1);
+}
+
+.section__title,
+.cta__title {
+  font-size: var(--size-h2);
+}
+
+.features__title {
+  font-size: var(--size-h3);
+}
+
+/* 588px = half the 1200px wrapper minus the 24px gap. Keeping the
+   headings on the text column is what produces the Figma line breaks. */
+.section__title {
+  max-width: 588px;
+  margin-bottom: var(--title-space);
+}
+
+.section__title--center {
+  max-width: none;
+  text-align: center;
+}
+
+.section__title--light {
+  color: var(--color-white);
+}
+
+/* Consistent vertical rhythm for every band on the page */
+.section {
+  padding-top: var(--section-space);
+  padding-bottom: var(--section-space);
+}
+
+/* The gallery and the features block share one cream field, so the
+   gallery drops its bottom padding to avoid a doubled gap. */
+.gallery {
+  padding-bottom: 0;
+}
+
+/* ==========================================================================
+   03. UTILITIES
+   ========================================================================== */
+
+/* -------- Wrapper: caps content at 1200px -------- */
+.wrapper {
+  max-width: var(--wrapper-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--wrapper-pad);
+  padding-right: var(--wrapper-pad);
+}
+
+/* -------- Skip link -------- */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 100;
+  transform: translate(-50%, -150%);
+  padding: 1rem 1.5rem;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-weight: 700;
+  transition: transform var(--transition);
+}
+
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
+
+/* -------- Eyebrow label -------- */
+.eyebrow {
+  margin-bottom: 0.5rem;
+  color: var(--color-gold);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.eyebrow--center {
+  text-align: center;
+}
+
+/* -------- Buttons --------
+   Both variants resolve to the same #966f2c hover/focus state,
+   matching the Figma "button examples" layer. */
+.btn {
+  display: inline-block;
+  padding: 1.125rem 2rem;
+  border: 2px solid transparent;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  transition: background-color var(--transition), color var(--transition),
+    border-color var(--transition);
+}
+
+.btn--light {
+  background-color: var(--color-white);
+  border-color: var(--color-white);
+  color: var(--color-black);
+}
+
+.btn--dark {
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.btn--light:hover,
+.btn--light:focus,
+.btn--dark:hover,
+.btn--dark:focus {
+  background-color: var(--color-gold-dark);
+  border-color: var(--color-gold-dark);
+  color: var(--color-white);
+}
+
+/* Visible keyboard focus everywhere */
+a:focus {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   04. ANIMATION
+   The hero content fades up on page load, staggered element by element.
+   ========================================================================== */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero__content > * {
+  animation: fade-up 0.9s ease-out both;
+}
+
+/* Complex selector (b): stagger each child of the hero content */
+.hero__content > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.hero__content > *:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* ==========================================================================
+   05. SITE HEADER + NAVIGATION
+   ========================================================================== */
+
+.site-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-header__logo img {
+  width: 140px;
+  height: auto;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-nav__link {
+  display: inline-block;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  color: var(--color-white);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.site-nav__link:hover,
+.site-nav__link:focus {
+  border-bottom-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
+@media (min-width: 768px) {
+  .site-header {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .site-header__logo img {
+    width: 180px;
+  }
+
+  .site-nav__list {
+    gap: 2rem;
+  }
+
+  .site-nav__link {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .site-header {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .site-header__logo img {
+    width: 200px;
+  }
+
+  .site-nav__list {
+    gap: 2.5rem;
+  }
+}
+
+/* ==========================================================================
+   06. HERO
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: var(--hero-height);
+  padding-top: 6rem;
+  padding-bottom: 3rem;
+  overflow: hidden;
+}
+
+.hero__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero__scrim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.hero__inner {
+  position: relative;
+  width: 100%;
+}
+
+.hero__content {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.hero__title {
+  color: var(--color-white);
+}
+
+.hero__text {
+  max-width: 660px;
+  margin: 1rem auto 2rem;
+  color: var(--color-white);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-top: 7rem;
+  }
+
+  .hero__text {
+    margin-top: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+/* ==========================================================================
+   07. GALLERY — "Experience A New Way To Taste Coffee"
+   One square feature image beside a 2x2 grid of square images.
+   ========================================================================== */
+
+.gallery__layout {
+  display: grid;
+  align-items: start;
+  gap: var(--gap);
+}
+
+.gallery__feature {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+}
+
+.gallery__grid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .gallery__layout {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==========================================================================
+   08. FEATURES — "Why Visit Us?"
+   ========================================================================== */
+
+.features__list {
+  display: grid;
+  gap: 3rem;
+}
+
+.features__item {
+  text-align: center;
+}
+
+.features__icon {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+}
+
+.features__title {
+  margin-bottom: 0.75rem;
+}
+
+.features__text {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .features__list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.5rem var(--gap);
+  }
+
+  /* Complex selector (c): the third card centres itself across both
+     tablet columns instead of leaving an empty cell. */
+  .features__list > .features__item:last-child {
+    grid-column: 1 / -1;
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1440px) {
+  .features__list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap);
+  }
+
+  .features__list > .features__item:last-child {
+    grid-column: auto;
+    max-width: none;
+  }
+}
+
+/* ==========================================================================
+   09. CALL TO ACTION — Menu / Locations
+   ========================================================================== */
+
+.cta {
+  position: relative;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  overflow: hidden;
+}
+
+.cta__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.cta__scrim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.cta__inner {
+  position: relative;
+  display: grid;
+  gap: 3rem;
+}
+
+.cta__panel {
+  text-align: center;
+}
+
+.cta__title {
+  max-width: 588px;
+  margin-right: auto;
+  margin-bottom: 1.5rem;
+  margin-left: auto;
+  color: var(--color-white);
+}
+
+@media (min-width: 768px) {
+  .cta {
+    padding-top: 5.5rem;
+    padding-bottom: 5.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .cta {
+    padding-top: 9rem;
+    padding-bottom: 9rem;
+  }
+
+  .cta__inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap);
+  }
+}
+
+/* ==========================================================================
+   10. STORY — "Read Our Story"
+   ========================================================================== */
+
+.story__layout {
+  display: grid;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.story__img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* Complex selector (a): space between stacked paragraphs only —
+   no stray margin after the last one. */
+.story__text p + p {
+  margin-top: 1.5rem;
+}
+
+.story__body .btn {
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .story__layout {
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .story__layout {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gap);
+  }
+}
+
+/* ==========================================================================
+   11. TESTIMONIALS
+   ========================================================================== */
+
+.testimonials {
+  background-color: var(--color-black);
+}
+
+.testimonials .eyebrow {
+  color: var(--color-gold);
+}
+
+.testimonials__list {
+  display: grid;
+  gap: var(--gap);
+}
+
+.testimonial {
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonial__img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.testimonial__body {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 3rem 1.5rem 1.5rem;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+  color: var(--color-white);
+}
+
+.testimonial__quote p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Complex selector (e): the attribution inside the caption block */
+.testimonial__body .testimonial__cite {
+  margin-top: 0.75rem;
+  color: var(--color-gold);
+  font-weight: 700;
+  font-style: normal;
+}
+
+.testimonial__cite cite {
+  font-style: normal;
+}
+
+@media (min-width: 768px) {
+  .testimonials__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Complex selector (d): third testimonial centres across both columns */
+  .testimonials__list > li:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - (var(--gap) / 2));
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1440px) {
+  .testimonials__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .testimonials__list > li:last-child {
+    grid-column: auto;
+    width: auto;
+  }
+}
+
+/* ==========================================================================
+   12. SITE FOOTER
+   ========================================================================== */
+
+.site-footer {
+  padding-bottom: var(--section-space);
+  background-color: var(--color-black);
+}
+
+.site-footer__text {
+  max-width: none;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--color-white);
+  font-size: 0.875rem;
+  text-align: center;
+}
